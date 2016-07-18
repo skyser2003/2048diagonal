@@ -141,10 +141,7 @@ public class Logic {
             int j = startY;
 
             while (true) {
-                findMergeList(
-                    i == localEndX ? localEndX - localDeltaX : i,
-                    j == endY ? endY - deltaX : j,
-                    true, true);
+                findMergeList(i, j, true, true);
 
                 if (i != localEndX - localDeltaX) {
                     i += localDeltaX;
