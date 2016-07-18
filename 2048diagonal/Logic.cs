@@ -169,17 +169,6 @@ public class Logic {
         int deltaX = -x;
         int deltaY = -y;
 
-        int startX = 0;
-        int startY = 0;
-
-        if (x == 1) {
-            startX = Width - 1;
-        }
-
-        if (y == 1) {
-            startY = Height - 1;
-        }
-
         // Clear
         for (int i = 0; i < Width; ++i) {
             for (int j = 0; j < Height; ++j) {
