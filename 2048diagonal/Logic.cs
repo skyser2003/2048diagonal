@@ -111,12 +111,12 @@ public class Logic {
 
         if (x != 0 && y == 0) {
             for (int i = 0; i < Height; ++i) {
-                findMergeList(startX, i, false, true);
+                findMergeList(startX, i, true, false);
             }
         }
         else if (x == 0 && y != 0) {
             for (int i = 0; i < Width; ++i) {
-                findMergeList(i, startY, true, false);
+                findMergeList(i, startY, false, true);
             }
         }
         else {

@@ -6,8 +6,13 @@ namespace _2048diagonal {
         {
             for (int i = 0; i < map.GetLength(0); ++i) {
                 for (int j = 0; j < map.GetLength(1); ++j) {
-                    Console.Write(map[i, j].Value);
-                    Console.Write(" ");
+                    if (map[i, j] == null) {
+                        Console.Write("0 ");
+                    }
+                    else {
+                        Console.Write(map[i, j].Value);
+                        Console.Write(" ");
+                    }
                 }
 
                 Console.WriteLine();
