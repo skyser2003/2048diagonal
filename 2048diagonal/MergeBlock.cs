@@ -21,6 +21,8 @@
 
     public void Merge()
     {
-        First.Add(Second);
+        if (Second != null) {
+            First.Add(Second);
+        }
     }
 }

@@ -4,8 +4,11 @@ namespace _2048diagonal {
     class Program {
         static void Print(Block[,] map)
         {
-            for (int i = 0; i < map.GetLength(0); ++i) {
-                for (int j = 0; j < map.GetLength(1); ++j) {
+            int width = map.GetLength(0);
+            int height = map.GetLength(1);
+
+            for (int j = height - 1; j >= 0; --j) {
+                for (int i = 0; i < width; ++i) {
                     if (map[i, j] == null) {
                         Console.Write("0 ");
                     }
@@ -17,6 +20,8 @@ namespace _2048diagonal {
 
                 Console.WriteLine();
             }
+
+            Console.WriteLine();
         }
 
         static void Main(string[] args)
@@ -32,23 +37,21 @@ namespace _2048diagonal {
             Print(map);
 
             while (true) {
-                if (Console.KeyAvailable == false) {
-                    continue;
-                }
+                var key = Console.ReadKey(true).Key;
 
                 int x = 0;
                 int y = 0;
 
-                if (Console.ReadKey().Key == ConsoleKey.W) {
+                if (key == ConsoleKey.W) {
                     y = 1;
                 }
-                else if (Console.ReadKey().Key == ConsoleKey.A) {
+                else if (key == ConsoleKey.A) {
                     x = -1;
                 }
-                else if (Console.ReadKey().Key == ConsoleKey.S) {
+                else if (key == ConsoleKey.S) {
                     y = -1;
                 }
-                else if (Console.ReadKey().Key == ConsoleKey.D) {
+                else if (key == ConsoleKey.D) {
                     x = 1;
                 }
 

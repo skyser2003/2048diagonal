@@ -21,8 +21,12 @@ public class Logic {
 
         for (int i = 0; i < Width; ++i) {
             for (int j = 0; j < Height; ++j) {
-                map[i, j] = new Block();
-                BlockList.Add(map[i, j]);
+                var block = new Block();
+                block.X = i;
+                block.Y = j;
+
+                map[i, j] = block;
+                BlockList.Add(block);
             }
         }
     }
@@ -41,9 +45,9 @@ public class Logic {
         AlignAfterMerge(x, y, mergeLineList);
     }
 
-    private Dictionary<int, List<MergeBlock>> DoMerge(int x, int y)
+    private Dictionary<Vec2, List<MergeBlock>> DoMerge(int x, int y)
     {
-        Dictionary<int, List<MergeBlock>> mergeLineList = new Dictionary<int, List<MergeBlock>>();
+        Dictionary<Vec2, List<MergeBlock>> mergeLineList = new Dictionary<Vec2, List<MergeBlock>>();
 
         int deltaX = -x;
         int deltaY = -y;
@@ -55,20 +59,20 @@ public class Logic {
 
         if (x == 1) {
             startX = Width - 1;
-            endX = 0;
+            endX = -1;
         }
         else if (x == -1) {
             startX = 0;
-            endX = Width - 1;
+            endX = Width;
         }
 
         if (y == 1) {
             startY = Height - 1;
-            endY = 0;
+            endY = -1;
         }
         else if (y == -1) {
             startY = 0;
-            endY = Height - 1;
+            endY = Height;
         }
 
         Action<int, int, bool, bool> findMergeList = (lineX, lineY, checkX, checkY) => {
@@ -77,8 +81,24 @@ public class Logic {
             int i = lineX;
             int j = lineY;
 
+            var mergeList = new List<MergeBlock>();
+            mergeLineList.Add(new Vec2(i, j), mergeList);
+
             while ((checkX && (i != endX)) || (checkY && (j != endY))) {
                 var block = map[i, j];
+
+                if (block != null) {
+                    if (lastMerge == null) {
+                        lastMerge = new MergeBlock();
+                        lastMerge.Add(block);
+                    }
+                    else if (lastMerge.IsFull() == false) {
+                        lastMerge.Add(block);
+                        mergeList.Add(lastMerge);
+
+                        lastMerge = null;
+                    }
+                }
 
                 if (i != endX) {
                     i += deltaX;
@@ -87,25 +107,10 @@ public class Logic {
                 if (j != endY) {
                     j += deltaY;
                 }
+            }
 
-                if (block == null) {
-                    continue;
-                }
-
-                if (mergeLineList.ContainsKey(j) == false) {
-                    mergeLineList.Add(j, new List<MergeBlock>());
-                }
-
-                if (lastMerge == null) {
-                    lastMerge = new MergeBlock();
-                    lastMerge.Add(block);
-                }
-                else if (lastMerge.IsFull() == false) {
-                    lastMerge.Add(block);
-                    mergeLineList[j].Add(lastMerge);
-
-                    lastMerge = null;
-                }
+            if (lastMerge != null) {
+                mergeList.Add(lastMerge);
             }
         };
 
@@ -124,9 +129,7 @@ public class Logic {
         }
 
         foreach (var pair in mergeLineList) {
-            var mergeList = pair.Value;
-
-            foreach (var merge in mergeList) {
+            foreach (var merge in pair.Value) {
                 merge.Merge();
             }
         }
@@ -134,7 +137,7 @@ public class Logic {
         return mergeLineList;
     }
 
-    private void AlignAfterMerge(int x, int y, Dictionary<int, List<MergeBlock>> mergeLineList)
+    private void AlignAfterMerge(int x, int y, Dictionary<Vec2, List<MergeBlock>> mergeLineList)
     {
         int deltaX = -x;
         int deltaY = -y;
@@ -161,10 +164,11 @@ public class Logic {
 
         // Reset map
         foreach (var pair in mergeLineList) {
+            var endPoint = pair.Key;
             var mergeList = pair.Value;
 
-            int newX = startX;
-            int newY = startY;
+            int newX = endPoint.X;
+            int newY = endPoint.Y;
 
             foreach (var merge in mergeList) {
                 int mergeX = newX;
