@@ -9,6 +9,8 @@ public class Logic {
 
     public List<Block> BlockList;
 
+    public Block[,] Map { get { return map; } }
+
     public void Init(int width, int height)
     {
         Width = width;
@@ -16,6 +18,13 @@ public class Logic {
 
         map = new Block[Width, Height];
         BlockList = new List<Block>();
+
+        for (int i = 0; i < Width; ++i) {
+            for (int j = 0; j < Height; ++j) {
+                map[i, j] = new Block();
+                BlockList.Add(map[i, j]);
+            }
+        }
     }
 
     public void Add(int x, int y)
