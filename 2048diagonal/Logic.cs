@@ -75,47 +75,33 @@ public class Logic {
             endY = Height;
         }
 
-        Action<int, int, bool, bool> findMergeList = (lineX, lineY, checkX, checkY) => {
-            MergeBlock lastMerge = null;
-
-            int i = lineX;
-            int j = lineY;
-
+        Action<int, int> findMergeList = (i, j) => {
             var mergeList = new List<MergeBlock>();
             mergeLineList.Add(new Vec2(i, j), mergeList);
 
-            while ((checkX && (i != endX)) || (checkY && (j != endY))) {
-                if (IsInRange(i, j) == false) {
-                    break;
-                }
+            MergeBlock lastMerge = null;
 
+            for (; IsInRange(i, j); i += deltaX, j += deltaY) {
                 var block = map[i, j];
-
-                if (block != null) {
-                    if (lastMerge == null) {
-                        lastMerge = new MergeBlock();
-                        lastMerge.Add(block);
-                    }
-                    else if (lastMerge.First.Value != block.Value) {
-                        mergeList.Add(lastMerge);
-
-                        lastMerge = new MergeBlock();
-                        lastMerge.Add(block);
-                    }
-                    else if (lastMerge.IsFull() == false) {
-                        lastMerge.Add(block);
-                        mergeList.Add(lastMerge);
-
-                        lastMerge = null;
-                    }
+                if (block == null) {
+                    continue;
                 }
 
-                if (i != endX) {
-                    i += deltaX;
+                if (lastMerge == null) {
+                    lastMerge = new MergeBlock();
+                    lastMerge.Add(block);
                 }
+                else if (lastMerge.First.Value != block.Value) {
+                    mergeList.Add(lastMerge);
 
-                if (j != endY) {
-                    j += deltaY;
+                    lastMerge = new MergeBlock();
+                    lastMerge.Add(block);
+                }
+                else if (lastMerge.IsFull() == false) {
+                    lastMerge.Add(block);
+                    mergeList.Add(lastMerge);
+
+                    lastMerge = null;
                 }
             }
 
@@ -127,13 +113,13 @@ public class Logic {
         // Horizontal
         if (x != 0 && y == 0) {
             for (int i = 0; i < Height; ++i) {
-                findMergeList(startX, i, true, false);
+                findMergeList(startX, i);
             }
         }
         // Vertical
         else if (x == 0 && y != 0) {
             for (int i = 0; i < Width; ++i) {
-                findMergeList(i, startY, false, true);
+                findMergeList(i, startY);
             }
         }
         // Diagonal
@@ -147,12 +133,12 @@ public class Logic {
             int j = startY;
 
             while (true) {
-                findMergeList(i, j, true, true);
+                findMergeList(i, j);
 
                 if (i != localEndX - localDeltaX) {
                     i += localDeltaX;
                 }
-                else if (j != endY) {
+                else if (j != endY - deltaY) {
                     j += deltaY;
                 }
                 else {
@@ -161,6 +147,7 @@ public class Logic {
             }
         }
 
+        // Merge
         foreach (var pair in mergeLineList) {
             foreach (var merge in pair.Value) {
                 merge.Merge();
