@@ -187,17 +187,7 @@ public class Logic {
             int newY = endPoint.Y;
 
             foreach (var merge in mergeList) {
-                int mergeX = newX;
-                int mergeY = newY;
-
-                if (x == 0) {
-                    mergeX = merge.First.X;
-                }
-                if (y == 0) {
-                    mergeY = merge.First.Y;
-                }
-
-                Reposition(merge.First, mergeX, mergeY);
+                Reposition(merge.First, newX, newY);
                 BlockList.Add(merge.First);
 
                 newX += deltaX;
