@@ -96,6 +96,12 @@ public class Logic {
                         lastMerge = new MergeBlock();
                         lastMerge.Add(block);
                     }
+                    else if (lastMerge.First.Value != block.Value) {
+                        mergeList.Add(lastMerge);
+
+                        lastMerge = new MergeBlock();
+                        lastMerge.Add(block);
+                    }
                     else if (lastMerge.IsFull() == false) {
                         lastMerge.Add(block);
                         mergeList.Add(lastMerge);
