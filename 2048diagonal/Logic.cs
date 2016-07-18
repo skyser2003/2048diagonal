@@ -85,6 +85,10 @@ public class Logic {
             mergeLineList.Add(new Vec2(i, j), mergeList);
 
             while ((checkX && (i != endX)) || (checkY && (j != endY))) {
+                if (IsInRange(i, j) == false) {
+                    break;
+                }
+
                 var block = map[i, j];
 
                 if (block != null) {
@@ -114,18 +118,44 @@ public class Logic {
             }
         };
 
+        // Horizontal
         if (x != 0 && y == 0) {
             for (int i = 0; i < Height; ++i) {
                 findMergeList(startX, i, true, false);
             }
         }
+        // Vertical
         else if (x == 0 && y != 0) {
             for (int i = 0; i < Width; ++i) {
                 findMergeList(i, startY, false, true);
             }
         }
+        // Diagonal
         else {
+            int localDeltaX = -deltaX;
 
+            int localStartX = endX - deltaX;
+            int localEndX = startX - deltaX;
+
+            int i = localStartX;
+            int j = startY;
+
+            while (true) {
+                findMergeList(
+                    i == localEndX ? localEndX - localDeltaX : i,
+                    j == endY ? endY - deltaX : j,
+                    true, true);
+
+                if (i != localEndX - localDeltaX) {
+                    i += localDeltaX;
+                }
+                else if (j != endY) {
+                    j += deltaY;
+                }
+                else {
+                    break;
+                }
+            }
         }
 
         foreach (var pair in mergeLineList) {
@@ -195,5 +225,10 @@ public class Logic {
         block.X = newX;
         block.Y = newY;
         map[block.X, block.Y] = block;
+    }
+
+    public bool IsInRange(int x, int y)
+    {
+        return 0 <= x && x < Width && 0 <= y && y < Height;
     }
 }

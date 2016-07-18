@@ -54,6 +54,22 @@ namespace _2048diagonal {
                 else if (key == ConsoleKey.D) {
                     x = 1;
                 }
+                else if (key == ConsoleKey.Q) {
+                    x = -1;
+                    y = 1;
+                }
+                else if (key == ConsoleKey.E) {
+                    x = 1;
+                    y = 1;
+                }
+                else if (key == ConsoleKey.Z) {
+                    x = -1;
+                    y = -1;
+                }
+                else if (key == ConsoleKey.C) {
+                    x = 1;
+                    y = -1;
+                }
 
                 if (x == 0 && y == 0) {
                     continue;
